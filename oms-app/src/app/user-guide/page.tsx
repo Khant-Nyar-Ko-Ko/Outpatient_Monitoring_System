@@ -129,7 +129,7 @@ const UserGuide = () => {
         ))}
       </div>
 
-      <p className="text-slate-600 py-4">
+      <p className="text-slate-600 py-4 text-center">
         <span className="text-black">Note:</span> Always ensure that patient
         details and medical records are handled securely and confidentially in
         compliance with healthcare regulations.

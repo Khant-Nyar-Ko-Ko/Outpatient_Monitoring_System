@@ -28,7 +28,7 @@ const TableBody: React.FC = () => {
               "Details",
               "Treatment",
             ].map((header) => (
-              <th key={header} className="py-2 px-4">
+              <th key={header} className={`py-2 px-4 ${header === "Details" ? "details-column" : ""}`}>
                 {header}
               </th>
             ))}
@@ -55,7 +55,7 @@ const TableBody: React.FC = () => {
                   <td className="py-2 px-4">
                     {patient.patientDetails.diagnosis}
                   </td>
-                  <td className="py-2 pl-8">
+                  <td className="py-2 pl-8 details-column">
                     <Link
                       href={`/patients/${patient.id}`}
                       aria-label={`View details of ${patient.name}`}

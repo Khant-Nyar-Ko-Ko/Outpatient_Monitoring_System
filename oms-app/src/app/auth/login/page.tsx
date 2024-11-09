@@ -99,16 +99,6 @@ const Login: React.FC = () => {
                 {showPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
               </button>
             </div>
-
-            <div className="flex items-center justify-between w-[300px]">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                <span className="text-gray-600 text-sm">Remember me</span>
-              </label>
-              <a href="#" className="text-primary hover:underline text-sm">
-                Forgot Password?
-              </a>
-            </div>
             <div>
               <div className="flex items-center justify-center gap-2 mb-4 w-[300px]">
                 <p className=" text-slate-500 text-sm">
@@ -123,7 +113,7 @@ const Login: React.FC = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primaryhover active:bg-primartactive transition"
+                className="w-full bg-primary text-white flex justify-center items-center py-2 rounded-lg hover:bg-primaryhover active:bg-primartactive transition"
               >
                 {loading ? <Loader2 className="animate-spin" /> : "Log in"}
               </button>

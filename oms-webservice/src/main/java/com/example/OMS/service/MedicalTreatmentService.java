@@ -80,40 +80,40 @@ public class MedicalTreatmentService {
         }
     }
 
-    public GetTreatmentStatusResponse getPatientTreatedStatus(Long patientId){
+    public GetTreatmentStatusResponse getPatientTreatedStatus(Long patientId) {
         Optional<Patient> patientOpt = patientRepository.findById(patientId);
-        if(!patientOpt.isPresent()){
+        if (!patientOpt.isPresent()) {
             throw new IllegalArgumentException("Patient with id " + patientId + " does not exist.");
-        }else{
+        } else {
             Patient existingPatient = patientOpt.get();
             List<MedicalTreatment> treatments = existingPatient.getMedicalTreatments();
-            if(treatments.size() > 0){
-                MedicalTreatment lastTreatment = existingPatient.getMedicalTreatments().getLast();
-                GetTreatmentStatusResponse response = new GetTreatmentStatusResponse();
-                response.setStatus(lastTreatment.getTreatedStatus() + "");
-                response.setAppointmentDate(lastTreatment.getAppointmentDate() + "");
-                return response;
-            }else{
-                GetTreatmentStatusResponse response = new GetTreatmentStatusResponse();
+            GetTreatmentStatusResponse response = new GetTreatmentStatusResponse();
+
+            if (!treatments.isEmpty()) {
+                MedicalTreatment lastTreatment = treatments.get(treatments.size() - 1);
+                response.setStatus(String.valueOf(lastTreatment.getTreatedStatus()));
+                response.setAppointmentDate(String.valueOf(lastTreatment.getAppointmentDate()));
+            } else {
                 response.setAppointmentDate("");
                 response.setStatus("");
-                return response;
             }
+            return response;
         }
     }
 
-    public void updatePatientTreatedStatus(MedicalTreatment.TreatmentStatus status, Long patientId){
+    public void updatePatientTreatedStatus(MedicalTreatment.TreatmentStatus status, Long patientId) {
         Optional<Patient> patientOpt = patientRepository.findById(patientId);
-        if(!patientOpt.isPresent()){
+        if (!patientOpt.isPresent()) {
             throw new IllegalArgumentException("Patient with id " + patientId + " does not exist.");
-        }else{
+        } else {
             Patient existingPatient = patientOpt.get();
             List<MedicalTreatment> treatments = existingPatient.getMedicalTreatments();
-            if(treatments.size() > 0){
-                MedicalTreatment lastTreatment = existingPatient.getMedicalTreatments().getLast();
+
+            if (!treatments.isEmpty()) {
+                MedicalTreatment lastTreatment = treatments.get(treatments.size() - 1);
                 lastTreatment.setTreatedStatus(status);
                 medicalTreatmentRepository.save(lastTreatment);
-            }else{
+            } else {
                 throw new IllegalArgumentException("This patient doesn't have medical treatment history.");
             }
         }

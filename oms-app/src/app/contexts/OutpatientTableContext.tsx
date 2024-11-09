@@ -43,7 +43,7 @@ export const OutpatientTableProvider: React.FC<{
     isNaN(Number(searchTerm)) ? searchTerm : undefined,
     !isNaN(Number(searchTerm)) ? Number(searchTerm) : undefined,
     treatedStatus,
-    currentPage
+    searchTerm ? undefined : currentPage
   );
 
   const patients = data?.data?.content;
@@ -76,17 +76,39 @@ export const OutpatientTableProvider: React.FC<{
   const tableRef = useRef<HTMLDivElement>(null);
   const handlePrint = () => {
     if (tableRef.current) {
-      const originalContent = document.body.innerHTML;
       const printContent = tableRef.current.innerHTML;
-
-      document.body.innerHTML = printContent;
-      document.body.style.backgroundColor = "white";
-
-      window.print();
-
-      document.body.innerHTML = originalContent;
+  
+      const printWindow = window.open("", "", "height=600,width=800");
+      if (printWindow) {
+        // Inject the print-specific CSS
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Outpatient Lists</title>
+              <style>
+                body { font-family: Arial, sans-serif; color: black; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid black; padding: 8px; text-align: left; }
+                /* Hide the Details column during print */
+                @media print {
+                  .details-column {
+                    display: none !important;
+                  }
+                }
+              </style>
+            </head>
+            <body>${printContent}</body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.onafterprint = () => {
+          printWindow.close();
+        };
+      }
     }
   };
+  
 
   const handleSearch = () => {
     setCurrentPage(0);

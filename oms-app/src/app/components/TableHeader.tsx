@@ -77,20 +77,15 @@ const TableHeader = () => {
         </div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: isModalOpen ? 1 : 0, y: isModalOpen ? 0 : -50 }}
-        transition={{ duration: 0.3 }}
-        style={{ display: isModalOpen ? "block" : "none" }}
-      >
+      <div style={{ display: isModalOpen ? "block" : "none" }}>
         <PatientFormModal
           isOpen={isModalOpen}
           onClose={closeModal}
           onSubmit={() => {
-            closeModal(); 
+            closeModal();
           }}
         />
-      </motion.div>
+      </div>
     </>
   );
 };

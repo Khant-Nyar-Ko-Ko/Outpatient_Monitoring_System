@@ -1,7 +1,16 @@
 steps:
  # Build the container image
  - name: 'gcr.io/cloud-builders/docker'
+<<<<<<< HEAD
    args: [ 'build', '-t', 'us-central1-docker.pkg.dev/${_PROJECT_ID}/webdev-dockers/oms-app:$COMMIT_SHA', './oms-app' ]
+=======
+    args: [
+      'build',
+      '-t', 'us-central1-docker.pkg.dev/${_PROJECT_ID}/webdev-dockers/oms-app:$COMMIT_SHA',
+      '--build-arg', 'REACT_APP_AUTH_URL=${_REACT_APP_AUTH_URL}', # Pass the env variable here
+      './oms-app'
+    ]
+>>>>>>> 309c620c8058cd61b0936f9e21c3c97143144ef6
  # Push the container image to Container Registry
  - name: 'gcr.io/cloud-builders/docker'
    args: ['push', 'us-central1-docker.pkg.dev/${_PROJECT_ID}/webdev-dockers/oms-app:$COMMIT_SHA']
@@ -21,6 +30,11 @@ steps:
    - 'managed'
    - '--port'
    - '3000'
+<<<<<<< HEAD
+=======
+   - '--set-env-vars'  # Pass runtime env variables here
+   - 'REACT_APP_AUTH_URL=${_REACT_APP_AUTH_URL}'
+>>>>>>> 309c620c8058cd61b0936f9e21c3c97143144ef6
 images:
  - 'us-central1-docker.pkg.dev/${_PROJECT_ID}/webdev-dockers/oms-app'
 

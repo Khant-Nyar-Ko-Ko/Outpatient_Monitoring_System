@@ -155,7 +155,7 @@ const Signup: React.FC = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primaryhover active:bg-primartactive transition"
+              className="w-full bg-primary text-white flex justify-center items-center py-2 rounded-lg hover:bg-primaryhover active:bg-primartactive transition"
             >
               {loading ? <Loader2 className="animate-spin" /> : "Sign Up"}
             </button>

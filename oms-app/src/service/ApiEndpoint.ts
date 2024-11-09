@@ -1,1 +1,1 @@
-export const BaseURL = "http://localhost:8080";
+export const BaseURL = "https://oms-webservice-237489682555.us-central1.run.app";

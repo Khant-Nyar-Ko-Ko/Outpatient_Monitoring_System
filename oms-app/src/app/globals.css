@@ -25,9 +25,3 @@ body {
     text-wrap: balance;
   }
 }
-
-@media print {
-  .details-column {
-    display: none;
-  }
-}

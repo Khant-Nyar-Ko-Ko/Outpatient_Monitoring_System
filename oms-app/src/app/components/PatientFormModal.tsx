@@ -63,7 +63,7 @@ const PatientFormModal: React.FC<PatientFormModalProps> = ({
           ...prevFormData,
           patientDetails: {
             ...prevFormData.patientDetails,
-            gender: value === "Male" ? 1 : 0,
+            gender: value === "Male" ? 0 : 1,
           },
         };
       } else if (name in prevFormData.patientDetails) {

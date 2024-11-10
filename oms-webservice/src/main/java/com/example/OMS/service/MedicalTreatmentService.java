@@ -33,6 +33,7 @@ public class MedicalTreatmentService {
         }
     }
 
+
     public MedicalTreatment createMedicalTreatment(MedicalTreatment medicalTreatment, Long patientId){
         Optional<Patient> patientOptional = patientRepository.findById(patientId);
         if(!patientOptional.isPresent()){
@@ -89,7 +90,9 @@ public class MedicalTreatmentService {
             GetTreatmentStatusResponse response = new GetTreatmentStatusResponse();
 
             if (!treatments.isEmpty()) {
-                MedicalTreatment lastTreatment = treatments.get(treatments.size() - 1);
+                MedicalTreatment lastTreatment = treatments.stream()
+                                .max(Comparator.comparing(MedicalTreatment::getAppointmentDate))
+                                        .orElseThrow(NoSuchElementException::new);
                 response.setStatus(String.valueOf(lastTreatment.getTreatedStatus()));
                 response.setAppointmentDate(String.valueOf(lastTreatment.getAppointmentDate()));
             } else {

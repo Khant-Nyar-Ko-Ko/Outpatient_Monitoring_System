@@ -154,12 +154,5 @@ public class MedicalTreatmentService {
         return statusCountResponses;
     }
 
-    public void deleteMedicalTreatment(Long treatmentId){
-        Optional<MedicalTreatment> existingTreatmentOptional = medicalTreatmentRepository.findById(treatmentId);
-        if(!existingTreatmentOptional.isPresent()){
-            throw new IllegalArgumentException("Treatment not found");
-        }else{
-            medicalTreatmentRepository.deleteById(treatmentId);
-        }
-    }
+    // delete medical treatment
 }

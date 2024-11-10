@@ -91,4 +91,23 @@ public class PatientService {
     }
 
     // getDiagnosisCount
+    public List<GetDiagnosisCountResponse> getDiagnosisCount(){
+        List<Patient> patients = patientRepository.findAll();
+
+        Map<String, Integer> diagnosisMap = new HashMap<>();
+
+        for(Patient patient : patients){
+            String diagnosis = patient.getPatientDetails().getDiagnosis();
+            diagnosisMap.put(diagnosis, diagnosisMap.getOrDefault(diagnosis, 0) + 1);
+        }
+
+        return diagnosisMap.entrySet().stream()
+                .map(entry -> {
+                    GetDiagnosisCountResponse response = new GetDiagnosisCountResponse();
+                    response.setDiagnosisName(entry.getKey());
+                    response.setCount(entry.getValue());
+                    return response;
+                })
+                .collect(Collectors.toList());
+    }
 }

@@ -63,6 +63,7 @@ const EditMedicalTreatmentModal: React.FC<ModalProps> = ({ isOpen, onClose, trea
         onSuccess: () => {
           console.log('Treatment Data:', formData);
           refetchTreatments();
+          window.location.reload();
           onClose();
         },
         onError: () => {

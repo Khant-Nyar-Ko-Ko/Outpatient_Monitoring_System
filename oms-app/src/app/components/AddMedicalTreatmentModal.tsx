@@ -85,6 +85,7 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
           });
           refetchTreatments();
           refetchPatientInfo();
+          window.location.reload();
           onClose();
         },
         onError: () => {

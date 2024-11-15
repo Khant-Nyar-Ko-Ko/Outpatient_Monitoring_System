@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>23</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
@@ -107,6 +107,15 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<source>17</source> <!-- Set to 23 -->
+					<target>17</target> <!-- Set to 23 -->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

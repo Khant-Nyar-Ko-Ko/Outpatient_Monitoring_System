@@ -6,10 +6,7 @@ import com.example.OMS.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,9 +27,12 @@ public class MedicalTreatmentService {
             throw new IllegalArgumentException("Patient with ID " + patientId + " is not found!");
         }else{
             Patient existingPatient = patientOptional.get();
-            return existingPatient.getMedicalTreatments();
+            return existingPatient.getMedicalTreatments().stream()
+                    .sorted(Comparator.comparing(MedicalTreatment::getAppointmentDate).reversed())
+                    .collect(Collectors.toList());
         }
     }
+
 
     public MedicalTreatment createMedicalTreatment(MedicalTreatment medicalTreatment, Long patientId){
         Optional<Patient> patientOptional = patientRepository.findById(patientId);
@@ -80,40 +80,42 @@ public class MedicalTreatmentService {
         }
     }
 
-    public GetTreatmentStatusResponse getPatientTreatedStatus(Long patientId){
+    public GetTreatmentStatusResponse getPatientTreatedStatus(Long patientId) {
         Optional<Patient> patientOpt = patientRepository.findById(patientId);
-        if(!patientOpt.isPresent()){
+        if (!patientOpt.isPresent()) {
             throw new IllegalArgumentException("Patient with id " + patientId + " does not exist.");
-        }else{
+        } else {
             Patient existingPatient = patientOpt.get();
             List<MedicalTreatment> treatments = existingPatient.getMedicalTreatments();
-            if(treatments.size() > 0){
-                MedicalTreatment lastTreatment = existingPatient.getMedicalTreatments().getLast();
-                GetTreatmentStatusResponse response = new GetTreatmentStatusResponse();
-                response.setStatus(lastTreatment.getTreatedStatus() + "");
-                response.setAppointmentDate(lastTreatment.getAppointmentDate() + "");
-                return response;
-            }else{
-                GetTreatmentStatusResponse response = new GetTreatmentStatusResponse();
+            GetTreatmentStatusResponse response = new GetTreatmentStatusResponse();
+
+            if (!treatments.isEmpty()) {
+                MedicalTreatment lastTreatment = treatments.stream()
+                                .max(Comparator.comparing(MedicalTreatment::getAppointmentDate))
+                                        .orElseThrow(NoSuchElementException::new);
+                response.setStatus(String.valueOf(lastTreatment.getTreatedStatus()));
+                response.setAppointmentDate(String.valueOf(lastTreatment.getAppointmentDate()));
+            } else {
                 response.setAppointmentDate("");
                 response.setStatus("");
-                return response;
             }
+            return response;
         }
     }
 
-    public void updatePatientTreatedStatus(MedicalTreatment.TreatmentStatus status, Long patientId){
+    public void updatePatientTreatedStatus(MedicalTreatment.TreatmentStatus status, Long patientId) {
         Optional<Patient> patientOpt = patientRepository.findById(patientId);
-        if(!patientOpt.isPresent()){
+        if (!patientOpt.isPresent()) {
             throw new IllegalArgumentException("Patient with id " + patientId + " does not exist.");
-        }else{
+        } else {
             Patient existingPatient = patientOpt.get();
             List<MedicalTreatment> treatments = existingPatient.getMedicalTreatments();
-            if(treatments.size() > 0){
-                MedicalTreatment lastTreatment = existingPatient.getMedicalTreatments().getLast();
+
+            if (!treatments.isEmpty()) {
+                MedicalTreatment lastTreatment = treatments.get(treatments.size() - 1);
                 lastTreatment.setTreatedStatus(status);
                 medicalTreatmentRepository.save(lastTreatment);
-            }else{
+            } else {
                 throw new IllegalArgumentException("This patient doesn't have medical treatment history.");
             }
         }
@@ -152,6 +154,7 @@ public class MedicalTreatmentService {
         return statusCountResponses;
     }
 
+    // delete medical treatment
     public void deleteMedicalTreatment(Long treatmentId){
         Optional<MedicalTreatment> existingTreatmentOptional = medicalTreatmentRepository.findById(treatmentId);
         if(!existingTreatmentOptional.isPresent()){

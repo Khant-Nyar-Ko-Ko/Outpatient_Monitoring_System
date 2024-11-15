@@ -90,6 +90,7 @@ public class PatientService {
         }
     }
 
+    // getDiagnosisCount
     public List<GetDiagnosisCountResponse> getDiagnosisCount(){
         List<Patient> patients = patientRepository.findAll();
 

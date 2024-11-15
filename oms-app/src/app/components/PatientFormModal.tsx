@@ -37,6 +37,16 @@ const PatientFormModal: React.FC<PatientFormModalProps> = ({
     { value: "Vietnamese", label: "Vietnamese" },
   ];
 
+  const diagnosisOptions = [
+    { value: "Allergy", label: "Allergy" },
+    { value: "Asthma", label: "Asthma" },
+    { value: "Chronic Pain", label: "Chronic Pain" },
+    { value: "Diabetes", label: "Diabetes" },
+    { value: "Heart Disease", label: "Heart Disease" },
+    { value: "Hypertension", label: "Hypertension" },
+    { value: "Migraine", label: "Migraine" },
+  ];
+
   const [formData, setFormData] = useState<Patient>({
     name: "",
     patientDetails: {
@@ -235,6 +245,23 @@ const PatientFormModal: React.FC<PatientFormModalProps> = ({
           </div>
 
           <div className="col-span-2">
+            <label className="block text-sm font-medium mb-1">Diagnosis</label>
+            <select
+              name="diagnosis"
+              className="w-full border rounded px-3 py-2"
+              value={formData.patientDetails.diagnosis}
+              onChange={handleChange}
+              required
+            >
+              {diagnosisOptions.map((diagnosis) => (
+                <option key={diagnosis.label} value={diagnosis.label}>
+                  {diagnosis.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="col-span-2">
             <label className="block text-sm font-medium mb-1">Contact</label>
             <input
               type="text"
@@ -255,18 +282,6 @@ const PatientFormModal: React.FC<PatientFormModalProps> = ({
               className="w-full border rounded px-3 py-2"
               placeholder="Enter Address"
               value={formData.patientDetails.address}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="col-span-2">
-            <label className="block text-sm font-medium mb-1">Diagnosis</label>
-            <input
-              type="text"
-              name="diagnosis"
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter Patient's Diagnosis"
-              value={formData.patientDetails.diagnosis}
               onChange={handleChange}
             />
           </div>

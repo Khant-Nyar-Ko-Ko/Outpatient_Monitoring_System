@@ -68,16 +68,22 @@ const BodyTemperatureChart: React.FC<DiagnosisChartProps> = ({ patientId }) => {
 
   return (
     <div>
-      <Line
-        data={bodyTemperatureLevelData}
-        options={{
-          responsive: true,
-          plugins: {
-            legend: { position: "top" },
-            title: { display: true, text: "Body Temperature Over Time" },
-          },
-        }}
-      />
+      {treatments.length == 0 ? (
+        <p className="text-center my-4">
+          There is no treatment data available for this patient yet
+        </p>
+      ) : (
+        <Line
+          data={bodyTemperatureLevelData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: { position: "top" },
+              title: { display: true, text: "Body Temperature Over Time" },
+            },
+          }}
+        />
+      )}
     </div>
   );
 };

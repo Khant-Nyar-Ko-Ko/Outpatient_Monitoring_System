@@ -13,7 +13,7 @@ import {
 import { useGetTreatment } from "@/app/hooks/useTreatmentApi";
 
 interface DiagnosisChartProps {
-  patientId : number
+  patientId: number;
 }
 
 ChartJS.register(
@@ -31,14 +31,24 @@ const GlucoseLevelChart: React.FC<DiagnosisChartProps> = ({ patientId }) => {
   const treatments = data?.data;
 
   const glucoseLevels = treatments
-    ?.map((treatment: { appointmentDate: string; medicalTreatmentDetails: { glucoseLevel: number } }) => ({
-      date: treatment.appointmentDate,
-      glucose: treatment.medicalTreatmentDetails.glucoseLevel,
-    }))
-    .sort((a: { date: Date; }, b: { date: Date; }) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    ?.map(
+      (treatment: {
+        appointmentDate: string;
+        medicalTreatmentDetails: { glucoseLevel: number };
+      }) => ({
+        date: treatment.appointmentDate,
+        glucose: treatment.medicalTreatmentDetails.glucoseLevel,
+      })
+    )
+    .sort(
+      (a: { date: Date }, b: { date: Date }) =>
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
 
-  const labels = glucoseLevels?.map((entry: { date: string; }) => entry.date) || [];
-  const glucoseData = glucoseLevels?.map((entry: {glucose: string}) => entry.glucose) || [];
+  const labels =
+    glucoseLevels?.map((entry: { date: string }) => entry.date) || [];
+  const glucoseData =
+    glucoseLevels?.map((entry: { glucose: string }) => entry.glucose) || [];
 
   const glucoseLevelData = {
     labels: labels,
@@ -55,16 +65,22 @@ const GlucoseLevelChart: React.FC<DiagnosisChartProps> = ({ patientId }) => {
 
   return (
     <div>
-      <Line
-        data={glucoseLevelData}
-        options={{
-          responsive: true,
-          plugins: {
-            legend: { position: "top" },
-            title: { display: true, text: "Glucose Level Over Time" },
-          },
-        }}
-      />
+      {treatments.length == 0 ? (
+        <p className="text-center my-4">
+          There is no treatment data available for this patient yet
+        </p>
+      ) : (
+        <Line
+          data={glucoseLevelData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: { position: "top" },
+              title: { display: true, text: "Glucose Level Over Time" },
+            },
+          }}
+        />
+      )}
     </div>
   );
 };

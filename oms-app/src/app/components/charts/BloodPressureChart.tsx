@@ -1,5 +1,5 @@
-import React from 'react';
-import { Line } from 'react-chartjs-2';
+import React from "react";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   LineElement,
@@ -9,78 +9,109 @@ import {
   Title,
   Tooltip,
   Legend,
-  ChartOptions
-} from 'chart.js';
-import { useGetTreatment } from '@/app/hooks/useTreatmentApi';
+  ChartOptions,
+} from "chart.js";
+import { useGetTreatment } from "@/app/hooks/useTreatmentApi";
 
 interface DiagnosisChartProps {
   patientId: number;
 }
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const BloodPressureChart: React.FC<DiagnosisChartProps> = ({ patientId }) => {
   const { data } = useGetTreatment(patientId);
   const treatments = data?.data;
+  console.log(treatments.length);
 
   const bloodPressureData = treatments
-    ?.map((treatment: { appointmentDate: string; medicalTreatmentDetails: { bloodPressure: string } }) => {
-      const [systolic, diastolic] = treatment.medicalTreatmentDetails.bloodPressure.split('/').map(Number);
-      return {
-        date: treatment.appointmentDate,
-        systolic,
-        diastolic,
-      };
-    })
-    .sort((a: { date: Date; }, b: { date: Date; }) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    ?.map(
+      (treatment: {
+        appointmentDate: string;
+        medicalTreatmentDetails: { bloodPressure: string };
+      }) => {
+        const [systolic, diastolic] =
+          treatment.medicalTreatmentDetails.bloodPressure
+            .split("/")
+            .map(Number);
+        return {
+          date: treatment.appointmentDate,
+          systolic,
+          diastolic,
+        };
+      }
+    )
+    .sort(
+      (a: { date: Date }, b: { date: Date }) =>
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
 
-  const labels = bloodPressureData?.map((entry: { date: string; }) => entry.date) || [];
-  const systolicData = bloodPressureData?.map((entry: { systolic: string; }) => entry.systolic) || [];
-  const diastolicData = bloodPressureData?.map((entry: { diastolic: string; }) => entry.diastolic) || [];
+  const labels =
+    bloodPressureData?.map((entry: { date: string }) => entry.date) || [];
+  const systolicData =
+    bloodPressureData?.map((entry: { systolic: string }) => entry.systolic) ||
+    [];
+  const diastolicData =
+    bloodPressureData?.map((entry: { diastolic: string }) => entry.diastolic) ||
+    [];
 
   const dataChart = {
     labels: labels,
     datasets: [
       {
-        label: 'Systolic (mmHg)',
+        label: "Systolic (mmHg)",
         data: systolicData,
-        borderColor: '#FF6384',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: "#FF6384",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
         tension: 0.4,
         fill: true,
       },
       {
-        label: 'Diastolic (mmHg)',
+        label: "Diastolic (mmHg)",
         data: diastolicData,
-        borderColor: '#36A2EB',
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: "#36A2EB",
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
         tension: 0.4,
         fill: true,
       },
     ],
   };
 
-  const options: ChartOptions<'line'> = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
       title: {
         display: true,
-        text: 'Blood Pressure Readings Over Time (mmHg)',
+        text: "Blood Pressure Readings Over Time (mmHg)",
       },
     },
     scales: {
       y: {
         beginAtZero: false,
-        min: 50, 
+        min: 50,
         max: 180,
       },
     },
   };
 
-  return <Line data={dataChart} options={options} />;
+  return treatments.length == 0 ? (
+    <p className="text-center my-4">
+      There is no treatment data available for this patient yet
+    </p>
+  ) : (
+    <Line data={dataChart} options={options} />
+  );
 };
 
 export default BloodPressureChart;

@@ -5,7 +5,7 @@ import { BsCheck, BsX } from "react-icons/bs";
 import { Treatment } from "@/types/treatmentTypes";
 import EditMedicalTreatmentModal from "./EditMedicalTreatmentModal";
 import DeleteMedicalTreatmentModal from "./DeleteMedicalTreatmentModal";
-import { motion } from "framer-motion"; // Import motion from Framer Motion
+import { motion } from "framer-motion";
 import { usePatientDetail } from "../contexts/PatientDetailContext";
 
 const getStatusBadge = (status: string) => {
@@ -34,7 +34,7 @@ const getStatusBadge = (status: string) => {
 };
 
 const MedicalTreatmentTable: React.FC = () => {
-  const {medicalTreatments} = usePatientDetail();
+  const { medicalTreatments } = usePatientDetail();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(
@@ -63,87 +63,89 @@ const MedicalTreatmentTable: React.FC = () => {
 
   return (
     <div>
-      <table className="w-full border-collapse border border-gray-300 rounded-lg shadow-md">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Blood Pressure
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Glucose Level
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Heart Rate
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Weight(kg)
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Height(cm)
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Temp(F)
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Status
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {medicalTreatments.map((treatment: Treatment) => (
-            <motion.tr
-              key={treatment.patientId}
-              className="even:bg-gray-100"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <td className="border border-gray-300 px-4 py-2">
-                {treatment.appointmentDate}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {treatment.medicalTreatmentDetails.bloodPressure}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {treatment.medicalTreatmentDetails.glucoseLevel}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {treatment.medicalTreatmentDetails.heartRate}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {treatment.medicalTreatmentDetails.weight}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {treatment.medicalTreatmentDetails.height}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {treatment.medicalTreatmentDetails.bodyTempF}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {getStatusBadge(treatment.treatedStatus)}
-              </td>
-              <td className="border px-4 py-4 flex items-center gap-3">
-                <button
-                  onClick={() => openEditModal(treatment)}
-                  className="text-black"
-                  aria-label="Edit Treatment"
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() => openDeleteModal(treatment)}
-                  className="text-red-500 hover:text-red-700"
-                  aria-label="Delete Treatment"
-                >
-                  <FaTrashAlt />
-                </button>
-              </td>
-            </motion.tr>
-          ))}
-        </tbody>
-      </table>
+      {medicalTreatments.length === 0 ? (
+        <p className="text-center text-gray-500 my-4"> There is no treatment data available for this patient yet</p>
+      ) : (
+        <table className="w-full border-collapse border border-gray-300 rounded-lg shadow-md">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Blood Pressure
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Glucose Level
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Heart Rate
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Weight(kg)
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Height(cm)
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Temp(F)
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Status</th>
+              <th className="border border-gray-300 px-4 py-2 text-left"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {medicalTreatments.map((treatment: Treatment) => (
+              <motion.tr
+                key={treatment.patientId}
+                className="even:bg-gray-100"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <td className="border border-gray-300 px-4 py-2">
+                  {treatment.appointmentDate}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {treatment.medicalTreatmentDetails.bloodPressure}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {treatment.medicalTreatmentDetails.glucoseLevel}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {treatment.medicalTreatmentDetails.heartRate}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {treatment.medicalTreatmentDetails.weight}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {treatment.medicalTreatmentDetails.height}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {treatment.medicalTreatmentDetails.bodyTempF}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {getStatusBadge(treatment.treatedStatus)}
+                </td>
+                <td className="border px-4 py-4 flex items-center gap-3">
+                  <button
+                    onClick={() => openEditModal(treatment)}
+                    className="text-black"
+                    aria-label="Edit Treatment"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => openDeleteModal(treatment)}
+                    className="text-red-500 hover:text-red-700"
+                    aria-label="Delete Treatment"
+                  >
+                    <FaTrashAlt />
+                  </button>
+                </td>
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       {selectedTreatment && (
         <motion.div
           initial={{ opacity: 0 }}

@@ -14,7 +14,7 @@ import {
 import { useGetTreatment } from "@/app/hooks/useTreatmentApi";
 
 interface DiagnosisChartProps {
-  patientId : number
+  patientId: number;
 }
 
 ChartJS.register(
@@ -67,16 +67,22 @@ const HeartRateChart: React.FC<DiagnosisChartProps> = ({ patientId }) => {
 
   return (
     <div>
-      <Line
-        data={heartRateLevelData}
-        options={{
-          responsive: true,
-          plugins: {
-            legend: { position: "top" },
-            title: { display: true, text: "Heart Rate Over Time" },
-          },
-        }}
-      />
+      {treatments.length == 0 ? (
+        <p className="text-center my-4">
+          There is no treatment data available for this patient yet
+        </p>
+      ) : (
+        <Line
+          data={heartRateLevelData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: { position: "top" },
+              title: { display: true, text: "Heart Rate Over Time" },
+            },
+          }}
+        />
+      )}
     </div>
   );
 };

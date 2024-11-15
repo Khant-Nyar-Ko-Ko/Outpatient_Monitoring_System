@@ -1,5 +1,5 @@
 import { Treatment } from "@/types/treatmentTypes";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCreateTreatment } from "../hooks/useTreatmentApi";
 import { usePatientDetail } from "../contexts/PatientDetailContext";
 
@@ -15,9 +15,11 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
   patientId,
 }) => {
   const createTreatmentMutation = useCreateTreatment();
-  const {refetchPatientInfo, refetchTreatments} = usePatientDetail();
-
+  const { refetchPatientInfo, refetchTreatments } = usePatientDetail();
   const [treatmentStatus, setTreatmentStatus] = useState<string>("PENDING");
+  const [firstTimeOpened, setFirstTimeOpened] = useState(true);
+  const [showValidation, setShowValidation] = useState(false);
+  const [showFirstTimeWarning, setShowFirstTimeWarning] = useState(true);
 
   const [formData, setFormData] = useState<Treatment>({
     appointmentDate: "",
@@ -32,12 +34,6 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
     },
     patientId,
   });
-
-  const [showValidation, setShowValidation] = useState(false);
-
-  // useEffect(() => {
-  //   if(createTreatmentMutation.isSuccess) refetchPatientInfo()
-  // },[createTreatmentMutation.isSuccess, refetchPatientInfo])
 
   const isFormValid =
     treatmentStatus !== "TREATED" ||
@@ -62,6 +58,7 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
     const newStatus = e.target.value;
     setTreatmentStatus(newStatus);
     setFormData((prev) => ({ ...prev, treatedStatus: newStatus }));
+    setShowFirstTimeWarning(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,7 +82,6 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
           });
           refetchTreatments();
           refetchPatientInfo();
-          window.location.reload();
           onClose();
         },
         onError: () => {
@@ -96,6 +92,13 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
       setShowValidation(true);
     }
   };
+
+  useEffect(() => {
+    if (isOpen && firstTimeOpened) {
+      setFirstTimeOpened(false);
+      setShowFirstTimeWarning(true);
+    }
+  }, [isOpen, firstTimeOpened]);
 
   if (!isOpen) return null;
 
@@ -266,9 +269,13 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
               </select>
             </div>
           </div>
-
+          {showFirstTimeWarning && (treatmentStatus === "PENDING" || treatmentStatus === "UNTREATED") && (
+            <p className="text-red-500 text-xs mb-2 text-center">
+              Please select a treatment status first.
+            </p>
+          )}
           {showValidation && treatmentStatus === "TREATED" && (
-            <p className="text-red-500 mb-4">
+            <p className="text-red-500 text-xs mb-4">
               Please fill all fields for Treated status.
             </p>
           )}

@@ -65,7 +65,7 @@ const GlucoseLevelChart: React.FC<DiagnosisChartProps> = ({ patientId }) => {
 
   return (
     <div>
-      {treatments.length == 0 ? (
+      {treatments?.length == 0 ? (
         <p className="text-center my-4">
           There is no treatment data available for this patient yet
         </p>

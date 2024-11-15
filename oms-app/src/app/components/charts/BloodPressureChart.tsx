@@ -30,7 +30,6 @@ ChartJS.register(
 const BloodPressureChart: React.FC<DiagnosisChartProps> = ({ patientId }) => {
   const { data } = useGetTreatment(patientId);
   const treatments = data?.data;
-  console.log(treatments.length);
 
   const bloodPressureData = treatments
     ?.map(
@@ -105,7 +104,7 @@ const BloodPressureChart: React.FC<DiagnosisChartProps> = ({ patientId }) => {
     },
   };
 
-  return treatments.length == 0 ? (
+  return treatments?.length == 0 ? (
     <p className="text-center my-4">
       There is no treatment data available for this patient yet
     </p>

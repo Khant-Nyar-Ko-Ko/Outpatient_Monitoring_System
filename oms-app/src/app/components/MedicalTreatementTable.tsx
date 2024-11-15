@@ -63,7 +63,7 @@ const MedicalTreatmentTable: React.FC = () => {
 
   return (
     <div>
-      {medicalTreatments.length === 0 ? (
+      {medicalTreatments?.length === 0 ? (
         <p className="text-center text-gray-500 my-4"> There is no treatment data available for this patient yet</p>
       ) : (
         <table className="w-full border-collapse border border-gray-300 rounded-lg shadow-md">

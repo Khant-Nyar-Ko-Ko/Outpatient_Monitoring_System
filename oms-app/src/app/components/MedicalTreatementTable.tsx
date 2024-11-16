@@ -93,7 +93,7 @@ const MedicalTreatmentTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {medicalTreatments.map((treatment: Treatment) => (
+            {medicalTreatments?.map((treatment: Treatment) => (
               <motion.tr
                 key={treatment.patientId}
                 className="even:bg-gray-100"

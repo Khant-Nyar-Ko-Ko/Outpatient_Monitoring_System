@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import { useGetSinglePatient } from '../hooks/usePatientApi';
 import { Patient } from '@/types/patientTypes';
 import { useGetTreatment } from '../hooks/useTreatmentApi';
@@ -22,6 +22,10 @@ export const PatientDetailProvider: React.FC<PatientProviderProps> = ({ id, chil
 
     const {data: patientData, refetch: refetchPatientInfo} = useGetSinglePatient(id);
   const { data: treatmentData, refetch: refetchTreatments } = useGetTreatment(id);
+
+  useEffect(() => {
+    refetchTreatments
+  },[])
   
 
     const patient = patientData?.data || [];

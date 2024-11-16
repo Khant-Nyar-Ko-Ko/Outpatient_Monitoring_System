@@ -21,8 +21,9 @@ const DeleteMedicalTreatmentModal: React.FC<ModalProps> = ({
     deleteTreatmentMutation.mutate(treatmentId, {
       onSuccess: () => {
         refetchTreatments();
+        console.log("Treatment Data Delete");
         refetchPatientInfo();
-        onClose();
+        console.log("Treatment Data Delete");
       },
     });
     onClose();

@@ -17,8 +17,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     authService.login(newToken);
     setToken(newToken);
     setIsLogin(true)
-    toast.success("Login successful")
     window.location.replace('/')
+    toast.success("Login successful")
   };
 
   const logout = () => {

@@ -40,9 +40,6 @@ export const getAllPatients = async (
   }
 };
 
-
-
-
 export const getSinglePatient = async ({ id }: { id: number }) => {
   try {
     const response = await axios.get(`${BaseURL}/api/patients/${id}`, {

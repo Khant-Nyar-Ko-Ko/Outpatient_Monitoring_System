@@ -24,8 +24,8 @@ export const PatientDetailProvider: React.FC<PatientProviderProps> = ({ id, chil
   const { data: treatmentData, refetch: refetchTreatments } = useGetTreatment(id);
 
   useEffect(() => {
-    refetchTreatments
-  },[])
+    refetchTreatments()
+  },[refetchTreatments])
   
 
     const patient = patientData?.data || [];

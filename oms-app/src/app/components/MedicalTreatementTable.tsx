@@ -95,7 +95,7 @@ const MedicalTreatmentTable: React.FC = () => {
           <tbody>
             {medicalTreatments?.map((treatment: Treatment) => (
               <motion.tr
-                key={treatment.patientId}
+                key={treatment.id}
                 className="even:bg-gray-100"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -171,6 +171,7 @@ const MedicalTreatmentTable: React.FC = () => {
             isOpen={isDeleteModalOpen}
             onClose={closeDeleteModal}
             treatmentId={selectedTreatment.id!}
+            patientId={selectedTreatment.patientId!}
           />
         </motion.div>
       )}

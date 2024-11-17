@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Treatment } from "@/types/treatmentTypes";
 import { useUpdateTreatment } from "../hooks/useTreatmentApi";
 import { usePatientDetail } from "../contexts/PatientDetailContext";
+import { useQueryClient } from "react-query";
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ const EditMedicalTreatmentModal: React.FC<ModalProps> = ({
   onClose,
   treatment,
 }) => {
+  const queryClient = useQueryClient();
   const { refetchTreatments } = usePatientDetail();
   const updateTreatmentMutation = useUpdateTreatment();
   const [treatmentStatus, setTreatmentStatus] = useState<string>("PENDING");
@@ -67,9 +69,11 @@ const EditMedicalTreatmentModal: React.FC<ModalProps> = ({
     e.preventDefault();
     if (isFormValid) {
       updateTreatmentMutation.mutate(formData, {
-        onSuccess: () => {
+        onSuccess:async () => {
+          await queryClient.invalidateQueries(['getTreatment',  treatment?.patientId],{
+            refetchActive: true, 
+          });
           refetchTreatments();
-          console.log("Treatment Data:", formData);
           onClose();
         },
         onError: () => {

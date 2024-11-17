@@ -2,6 +2,7 @@ import { Treatment } from "@/types/treatmentTypes";
 import React, { useEffect, useState } from "react";
 import { useCreateTreatment } from "../hooks/useTreatmentApi";
 import { usePatientDetail } from "../contexts/PatientDetailContext";
+import { useQueryClient } from "react-query";
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
   onClose,
   patientId,
 }) => {
+  const queryClient = useQueryClient();
   const createTreatmentMutation = useCreateTreatment();
   const { refetchPatientInfo, refetchTreatments } = usePatientDetail();
   const [treatmentStatus, setTreatmentStatus] = useState<string>("PENDING");
@@ -65,23 +67,31 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
     e.preventDefault();
     if (isFormValid) {
       createTreatmentMutation.mutate(formData, {
-        onSuccess: () => {
-          console.log("Treatment Data:", formData);
+        onSuccess: async () => {
+          await queryClient.invalidateQueries(['getTreatment', patientId],{
+            refetchActive: true, 
+          });
+          refetchTreatments();
+          await queryClient.invalidateQueries(['singlePatient',patientId], {
+            refetchActive: true
+          })
+          refetchPatientInfo();
           setFormData({
             appointmentDate: "",
             treatedStatus: "PENDING",
             medicalTreatmentDetails: {
-              bloodPressure: "N/A",
+              bloodPressure: "",
               glucoseLevel: 0,
               heartRate: 0,
               weight: 0,
               height: 0,
               bodyTempF: 0,
             },
-            patientId: 0,
+            patientId,
           });
-          refetchTreatments();
-          refetchPatientInfo();
+          setTreatmentStatus("PENDING");
+          setShowValidation(false);
+          setShowFirstTimeWarning(true);
           onClose();
         },
         onError: () => {

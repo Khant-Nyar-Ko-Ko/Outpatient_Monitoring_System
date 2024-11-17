@@ -2,6 +2,7 @@ import { Treatment } from "@/types/treatmentTypes";
 import React, { useEffect, useState } from "react";
 import { useCreateTreatment } from "../hooks/useTreatmentApi";
 import { usePatientDetail } from "../contexts/PatientDetailContext";
+import { useQueryClient } from "react-query";
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
   onClose,
   patientId,
 }) => {
+  const queryClient = useQueryClient();
   const createTreatmentMutation = useCreateTreatment();
   const { refetchPatientInfo, refetchTreatments } = usePatientDetail();
   const [treatmentStatus, setTreatmentStatus] = useState<string>("PENDING");
@@ -65,23 +67,31 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
     e.preventDefault();
     if (isFormValid) {
       createTreatmentMutation.mutate(formData, {
-        onSuccess: () => {
-          console.log("Treatment Data:", formData);
+        onSuccess: async () => {
+          await queryClient.invalidateQueries(['getTreatment', patientId],{
+            refetchActive: true, 
+          });
+          refetchTreatments();
+          await queryClient.invalidateQueries(['singlePatient',patientId], {
+            refetchActive: true
+          })
+          refetchPatientInfo();
           setFormData({
             appointmentDate: "",
             treatedStatus: "PENDING",
             medicalTreatmentDetails: {
-              bloodPressure: "N/A",
+              bloodPressure: "",
               glucoseLevel: 0,
               heartRate: 0,
               weight: 0,
               height: 0,
               bodyTempF: 0,
             },
-            patientId: 0,
+            patientId,
           });
-          refetchTreatments();
-          refetchPatientInfo();
+          setTreatmentStatus("PENDING");
+          setShowValidation(false);
+          setShowFirstTimeWarning(true);
           onClose();
         },
         onError: () => {
@@ -125,12 +135,24 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
               />
             </div>
             <div>
+              <label>Treatment Status</label>
+              <select
+                value={treatmentStatus}
+                onChange={handleStatusChange}
+                className="border rounded p-2 w-full"
+              >
+                <option value="PENDING">Pending</option>
+                <option value="TREATED">Treated</option>
+                <option value="UNTREATED">Untreated</option>
+              </select>
+            </div>
+            <div>
               <label>Heart Rate</label>
               <input
                 type="number"
                 name="heartRate"
-                min={65}
-                max={90}
+                min={30}
+                max={200}
                 value={formData.medicalTreatmentDetails.heartRate}
                 onChange={handleChange}
                 placeholder="Heart Rate"
@@ -154,7 +176,7 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
                 name="bloodPressure"
                 value={formData.medicalTreatmentDetails.bloodPressure}
                 onChange={handleChange}
-                placeholder="Blood Pressure"
+                placeholder="Systolic/Diastolic"
                 disabled={
                   formData.treatedStatus === "PENDING" ||
                   formData.treatedStatus === "UNTREATED"
@@ -173,8 +195,8 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
               <input
                 type="number"
                 name="bodyTempF"
-                min={90}
-                max={105}
+                min={80}
+                max={120}
                 value={formData.medicalTreatmentDetails.bodyTempF}
                 onChange={handleChange}
                 placeholder="Body Temperature"
@@ -196,8 +218,8 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
               <input
                 type="number"
                 name="glucoseLevel"
-                min={20}
-                max={90}
+                min={80}
+                max={300}
                 value={formData.medicalTreatmentDetails.glucoseLevel}
                 onChange={handleChange}
                 placeholder="Glucose Level"
@@ -219,6 +241,8 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
               <input
                 type="number"
                 name="height"
+                min={45}
+                max={200}
                 value={formData.medicalTreatmentDetails.height}
                 onChange={handleChange}
                 placeholder="Height"
@@ -240,6 +264,8 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
               <input
                 type="number"
                 name="weight"
+                min={2}
+                max={110}
                 value={formData.medicalTreatmentDetails.weight}
                 onChange={handleChange}
                 placeholder="Weight"
@@ -256,18 +282,7 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
                 }`}
               />
             </div>
-            <div>
-              <label>Treatment Status</label>
-              <select
-                value={treatmentStatus}
-                onChange={handleStatusChange}
-                className="border rounded p-2 w-full"
-              >
-                <option value="PENDING">Pending</option>
-                <option value="TREATED">Treated</option>
-                <option value="UNTREATED">Untreated</option>
-              </select>
-            </div>
+            
           </div>
           {showFirstTimeWarning && (treatmentStatus === "PENDING" || treatmentStatus === "UNTREATED") && (
             <p className="text-red-500 text-xs mb-2 text-center">

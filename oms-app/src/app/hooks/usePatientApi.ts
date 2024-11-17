@@ -18,9 +18,8 @@ export const useGetAllPatients = (
   treatedStatus?: string,
   page?: number
 ) => {
-  return useQuery(
-    ["allPatients", name, id, treatedStatus, page],
-    () => getAllPatients(name, id, treatedStatus, page)
+  return useQuery(["allPatients", name, id, treatedStatus, page], () =>
+    getAllPatients(name, id, treatedStatus, page)
   );
 };
 

@@ -2,30 +2,46 @@
 import React from "react";
 import { useDeleteTreatment } from "../hooks/useTreatmentApi";
 import { usePatientDetail } from "../contexts/PatientDetailContext";
+import { useQueryClient } from "react-query";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   treatmentId: number;
+  patientId: number;
 }
 
 const DeleteMedicalTreatmentModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   treatmentId,
+  patientId
 }) => {
+  const queryClient = useQueryClient();
+  const {refetchTreatments} = usePatientDetail();
   const deleteTreatmentMutation = useDeleteTreatment();
-  const { refetchTreatments, refetchPatientInfo } = usePatientDetail();
+  const { refetchPatientInfo } = usePatientDetail();
 
   const handleDelete = () => {
     deleteTreatmentMutation.mutate(treatmentId, {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(['getTreatment', patientId],{
+          refetchActive: true, 
+        });
         refetchTreatments();
+        await queryClient.invalidateQueries(['singlePatient',patientId], {
+          refetchActive: true
+        })
         refetchPatientInfo();
-        onClose();
+    onClose();
+
+      },
+      onError: (error) => {
+        console.error("Error deleting treatment:", error);
+    onClose();
+
       },
     });
-    onClose();
   };
 
   if (!isOpen) return null;

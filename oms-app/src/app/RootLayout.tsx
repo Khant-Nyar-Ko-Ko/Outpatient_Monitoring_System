@@ -10,9 +10,9 @@ import { usePathname } from "next/navigation";
 import { OutpatientTableProvider } from "./contexts/OutpatientTableContext";
 import ErrorPage from "./error";
 
-const queryClient = new QueryClient();
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
+  const [queryClient] = React.useState(() => new QueryClient())
   const pathname = usePathname();
   const isAuthRoute = pathname.startsWith("/auth");
 

@@ -48,6 +48,7 @@ The **Outpatient Monitoring System (OPD)** is designed to enhance healthcare man
 
 ## Web Address
 - https://oms-app-237489682555.us-central1.run.app
+- https://oms-webservice-237489682555.us-central1.run.app
 
 
 ## Installation and Setup
@@ -78,7 +79,7 @@ Developed by:
 - La Yaung Chit    : 6631503064
 - Lin Htet Aung    : 6631503065
 - Thaung Than Han  : 6631503091
-- Moe Myamyintzu   : 6631503128
+- Moe Mya Myintzu   : 6631503128
   
 For further assistance, please reach out to the development team.
 - Email : 6631503091@lamduan.mfu.ac.th, 6631503061@lamduan.mfu.ac.th

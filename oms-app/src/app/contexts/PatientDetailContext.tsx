@@ -1,38 +1,66 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { createContext, useContext, ReactNode, useEffect } from 'react';
-import { useGetSinglePatient } from '../hooks/usePatientApi';
-import { Patient } from '@/types/patientTypes';
-import { useGetTreatment } from '../hooks/useTreatmentApi';
+import React, { createContext, useContext, ReactNode, useEffect } from "react";
+import {
+  useGetSinglePatient,
+  useGetTreatmentStatus,
+} from "../hooks/usePatientApi";
+import { Patient } from "@/types/patientTypes";
+import { useGetTreatment } from "../hooks/useTreatmentApi";
 
 interface PatientContextProps {
-    patient: Patient;
-    refetchPatientInfo: any;
-    medicalTreatments: any;
-    refetchTreatments: any;
+  patient: Patient;
+  refetchPatientInfo: any;
+  medicalTreatments: any;
+  refetchTreatments: any;
+  patientStatus: string;
+  appointmentDate: string;
+  refetchTreatmentStatus: any;
 }
 
-const PatientDetailContext = createContext<PatientContextProps | undefined>(undefined);
+const PatientDetailContext = createContext<PatientContextProps | undefined>(
+  undefined
+);
 
 interface PatientProviderProps {
   id: number;
   children: ReactNode;
 }
 
-export const PatientDetailProvider: React.FC<PatientProviderProps> = ({ id, children }) => {
+export const PatientDetailProvider: React.FC<PatientProviderProps> = ({
+  id,
+  children,
+}) => {
+  const { data: patientData, refetch: refetchPatientInfo } =
+    useGetSinglePatient(id);
+  const { data: treatmentData, refetch: refetchTreatments } =
+    useGetTreatment(id);
 
-    const {data: patientData, refetch: refetchPatientInfo} = useGetSinglePatient(id);
-  const { data: treatmentData, refetch: refetchTreatments } = useGetTreatment(id);
+  const { data, refetch: refetchTreatmentStatus } = useGetTreatmentStatus(
+    id as number
+  );
+  const patientStatus = data?.data.status || "PENDING";
+  const appointmentDate = data?.data.appointmentDate;
 
   useEffect(() => {
-    refetchTreatments()
-  },[refetchTreatments])
-  
+    refetchTreatments();
+    refetchTreatmentStatus().then(() => {});
+  }, [refetchTreatmentStatus, refetchTreatments]);
 
-    const patient = patientData?.data || [];
-    const medicalTreatments = treatmentData?.data || [];
+  const patient = patientData?.data || [];
+  const medicalTreatments = treatmentData?.data || [];
 
   return (
-    <PatientDetailContext.Provider value={{ patient, refetchPatientInfo ,medicalTreatments, refetchTreatments}}>
+    <PatientDetailContext.Provider
+      value={{
+        patient,
+        refetchPatientInfo,
+        medicalTreatments,
+        refetchTreatments,
+        patientStatus,
+        appointmentDate,
+        refetchTreatmentStatus,
+      }}
+    >
       {children}
     </PatientDetailContext.Provider>
   );
@@ -41,7 +69,7 @@ export const PatientDetailProvider: React.FC<PatientProviderProps> = ({ id, chil
 export const usePatientDetail = () => {
   const context = useContext(PatientDetailContext);
   if (context === undefined) {
-    throw new Error('usePatient must be used within a PatientProvider');
+    throw new Error("usePatient must be used within a PatientProvider");
   }
   return context;
 };

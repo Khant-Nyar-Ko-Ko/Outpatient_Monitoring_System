@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Treatment } from "@/types/treatmentTypes";
 import { useUpdateTreatment } from "../hooks/useTreatmentApi";
 import { usePatientDetail } from "../contexts/PatientDetailContext";
@@ -17,9 +17,11 @@ const EditMedicalTreatmentModal: React.FC<ModalProps> = ({
   treatment,
 }) => {
   const queryClient = useQueryClient();
-  const { refetchTreatments } = usePatientDetail();
+  const { refetchTreatments, refetchTreatmentStatus } = usePatientDetail();
   const updateTreatmentMutation = useUpdateTreatment();
-  const [treatmentStatus, setTreatmentStatus] = useState<string>("PENDING");
+  const [treatmentStatus, setTreatmentStatus] = useState<string>(
+    treatment?.treatedStatus
+  );
   const [formData, setFormData] = useState<Treatment>({
     id: treatment?.id,
     appointmentDate: treatment?.appointmentDate,
@@ -37,12 +39,17 @@ const EditMedicalTreatmentModal: React.FC<ModalProps> = ({
 
   const [showValidation, setShowValidation] = useState(false);
 
+  useEffect(() => {
+    if (updateTreatmentMutation.isSuccess) {
+      refetchTreatments();
+    }
+  }, [refetchTreatments, updateTreatmentMutation.isSuccess]);
+
   const isFormValid =
     treatmentStatus !== "TREATED" ||
     Object.values(formData.medicalTreatmentDetails).every(
       (value) => value !== ""
     );
-    
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -69,11 +76,12 @@ const EditMedicalTreatmentModal: React.FC<ModalProps> = ({
     e.preventDefault();
     if (isFormValid) {
       updateTreatmentMutation.mutate(formData, {
-        onSuccess:async () => {
-          await queryClient.invalidateQueries(['getTreatment',  treatment?.patientId],{
-            refetchActive: true, 
+        onSuccess: async () => {
+          await queryClient.invalidateQueries(["getTreatment"], {
+            refetchActive: true,
           });
           refetchTreatments();
+          refetchTreatmentStatus();
           onClose();
         },
         onError: () => {

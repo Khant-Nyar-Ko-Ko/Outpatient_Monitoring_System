@@ -17,7 +17,8 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const createTreatmentMutation = useCreateTreatment();
-  const { refetchPatientInfo, refetchTreatments } = usePatientDetail();
+  const { refetchPatientInfo, refetchTreatments, refetchTreatmentStatus } =
+    usePatientDetail();
   const [treatmentStatus, setTreatmentStatus] = useState<string>("PENDING");
   const [firstTimeOpened, setFirstTimeOpened] = useState(true);
   const [showValidation, setShowValidation] = useState(false);
@@ -68,13 +69,15 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
     if (isFormValid) {
       createTreatmentMutation.mutate(formData, {
         onSuccess: async () => {
-          await queryClient.invalidateQueries(['getTreatment', patientId],{
-            refetchActive: true, 
+          await queryClient.invalidateQueries(["getTreatment"], {
+            refetchActive: true,
           });
           refetchTreatments();
-          await queryClient.invalidateQueries(['singlePatient',patientId], {
-            refetchActive: true
-          })
+
+          refetchTreatmentStatus();
+          await queryClient.invalidateQueries(["singlePatient", patientId], {
+            refetchActive: true,
+          });
           refetchPatientInfo();
           setFormData({
             appointmentDate: "",
@@ -282,13 +285,14 @@ const AddMedicalTreatmentModal: React.FC<ModalProps> = ({
                 }`}
               />
             </div>
-            
           </div>
-          {showFirstTimeWarning && (treatmentStatus === "PENDING" || treatmentStatus === "UNTREATED") && (
-            <p className="text-red-500 text-xs mb-2 text-center">
-              Please select a treatment status first.
-            </p>
-          )}
+          {showFirstTimeWarning &&
+            (treatmentStatus === "PENDING" ||
+              treatmentStatus === "UNTREATED") && (
+              <p className="text-red-500 text-xs mb-2 text-center">
+                Please select a treatment status first.
+              </p>
+            )}
           {showValidation && treatmentStatus === "TREATED" && (
             <p className="text-red-500 text-xs mb-4">
               Please fill all fields for Treated status.

@@ -7,30 +7,26 @@ import { RxCrossCircled } from "react-icons/rx";
 import { CgSandClock } from "react-icons/cg";
 import { usePatientDetail } from "../contexts/PatientDetailContext";
 import TreatmentStatus from "./TreatmentStatus";
-import { useGetTreatmentStatus } from "../hooks/usePatientApi";
 import { motion } from "framer-motion";
 
 const PatientProfile: React.FC = () => {
-  const { patient } = usePatientDetail();
-  const [id, setId] = useState<number | undefined>(undefined);
+  const { patient, patientStatus, appointmentDate } = usePatientDetail();
+  const [, setId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (patient.id) {
       setId(patient.id);
     }
-  }, [patient.id]);
+  }, [patient.id, patientStatus, appointmentDate]);
 
-  const { data } = useGetTreatmentStatus(id as number);
-  const patientStatus = data?.data.status || "PENDING";
-  const appointmentDate = data?.data.appointmentDate;
-
-  const { statusIcon, statusBorder, statusTextColor, statusMessage } = generateStatus(patientStatus);
+  const { statusIcon, statusBorder, statusTextColor, statusMessage } =
+    generateStatus(patientStatus);
 
   return (
     <motion.div
       className="bg-white px-6 py-[38px] rounded-lg flex flex-col items-center gap-4 w-1/3"
       initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }} 
+      animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-center justify-between px-6 gap-6 w-full">
@@ -49,7 +45,7 @@ const PatientProfile: React.FC = () => {
         <p>:</p>
         <p className="text-lg">{patient.patientDetails?.diagnosis}</p>
       </div>
-    
+
       <motion.div
         className={`${statusBorder} border flex w-full justify-between items-center gap-6 px-3 py-2 rounded`}
         initial={{ opacity: 0, x: -20 }}
@@ -59,7 +55,9 @@ const PatientProfile: React.FC = () => {
         {statusIcon}
         <div className="flex flex-col justify-center items-start px-8">
           <p className={`${statusTextColor} text-sm`}>{statusMessage}</p>
-          {appointmentDate && <p className={`${statusTextColor}`}>{appointmentDate}</p>}
+          {appointmentDate && (
+            <p className={`${statusTextColor}`}>{appointmentDate}</p>
+          )}
         </div>
       </motion.div>
     </motion.div>

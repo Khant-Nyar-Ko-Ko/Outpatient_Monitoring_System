@@ -7,6 +7,7 @@ import {
   useUpdateTreatmentStatus,
 } from "../hooks/usePatientApi";
 import { useOutpatientTable } from "../contexts/OutpatientTableContext";
+import { usePatientDetail } from "../contexts/PatientDetailContext";
 import { useQueryClient } from "react-query";
 
 interface TreatmentStatusProps {
@@ -23,8 +24,10 @@ const TreatmentStatus: React.FC<TreatmentStatusProps> = ({
   const queryClient = useQueryClient();
   const { data, refetch } = useGetTreatmentStatus(patientID);
   const { treatmentRefetch, refetchPatients } = useOutpatientTable();
+  const { refetchTreatments, refetchTreatmentStatus } = usePatientDetail();
   const updateTreatmentStatusMutation = useUpdateTreatmentStatus();
   const patientStatus = data?.data?.status || "PENDING";
+  console.log(data);
 
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<string>(patientStatus);
@@ -44,18 +47,28 @@ const TreatmentStatus: React.FC<TreatmentStatusProps> = ({
       {
         onSuccess: async () => {
           setStatus(selectedStatus);
-          await queryClient.invalidateQueries(["treatmentCount"],{
-            refetchActive: true, 
+          await queryClient.invalidateQueries(["getTreatment"], {
+            refetchActive: true,
           });
+          refetchTreatments();
+
+          refetchTreatmentStatus();
           treatmentRefetch();
-          await queryClient.invalidateQueries(["treatmentStatus"],{
-            refetchActive: true, 
-          });
-          await refetch();
-          await queryClient.invalidateQueries(["allPatients"],{
-            refetchActive: true, 
-          });
-          await refetchPatients();
+          refetch();
+          refetchPatients();
+
+          // await queryClient.invalidateQueries(['treatmentStatus'],{
+          //   refetchActive: true,
+          // })
+          // await queryClient.invalidateQueries(["treatmentCount"], {
+          //   refetchActive: true,
+          // });
+          // await queryClient.invalidateQueries(["treatmentStatus"], {
+          //   refetchActive: true,
+          // });
+          // await queryClient.invalidateQueries(["allPatients"], {
+          //   refetchActive: true,
+          // });
           if (!isControlled) {
             setIsOpen(false);
           } else {

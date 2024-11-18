@@ -77,4 +77,4 @@ Developed by:
 - Moe Myamyintzu   : 6631503128
   
 For further assistance, please reach out to the development team.
-Email : 6631503091@lamduan.mfu.ac.th, 6631503061@lamduan.mfu.ac.th
+- Email : 6631503091@lamduan.mfu.ac.th, 6631503061@lamduan.mfu.ac.th

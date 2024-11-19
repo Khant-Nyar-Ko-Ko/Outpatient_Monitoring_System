@@ -24,7 +24,7 @@ const TreatmentStatus: React.FC<TreatmentStatusProps> = ({
   const queryClient = useQueryClient();
   const { data, refetch } = useGetTreatmentStatus(patientID);
   const { treatmentRefetch, refetchPatients } = useOutpatientTable();
-  const { refetchTreatments, refetchTreatmentStatus } = usePatientDetail();
+  // const { refetchTreatments, refetchTreatmentStatus } = usePatientDetail();
   const updateTreatmentStatusMutation = useUpdateTreatmentStatus();
   const patientStatus = data?.data?.status || "PENDING";
   console.log(data);
@@ -50,9 +50,9 @@ const TreatmentStatus: React.FC<TreatmentStatusProps> = ({
           await queryClient.invalidateQueries(["getTreatment"], {
             refetchActive: true,
           });
-          refetchTreatments();
+          // refetchTreatments();
 
-          refetchTreatmentStatus();
+          // refetchTreatmentStatus();
           treatmentRefetch();
           refetch();
           refetchPatients();

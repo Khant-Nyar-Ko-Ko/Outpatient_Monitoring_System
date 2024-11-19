@@ -3,19 +3,20 @@ import React from "react";
 import Link from "next/link";
 import { FaEye } from "react-icons/fa6";
 import { motion, AnimatePresence } from "framer-motion";
-// import TreatmentStatus from "./TreatmentStatus";
+import TreatmentStatus from "./TreatmentStatus";
 import { useOutpatientTable } from "../contexts/OutpatientTableContext";
-import DashboardTreatmentStatus from "./DashboardTreatmentStatus";
+// import DashboardTreatmentStatus from "./DashboardTreatmentStatus";
+import { useState } from "react";
 
 const TableBody: React.FC = () => {
   const { tableRef, patients } = useOutpatientTable();
   console.log(patients);
 
-  // const [openPatientID, setOpenPatientID] = useState<number | null>(null);
+  const [openPatientID, setOpenPatientID] = useState<number | null>(null);
 
-  // const toggleDropdown = (patientID: number) => {
-  //   setOpenPatientID((prevID) => (prevID === patientID ? null : patientID));
-  // };
+  const toggleDropdown = (patientID: number) => {
+    setOpenPatientID((prevID) => (prevID === patientID ? null : patientID));
+  };
 
   return (
     <div ref={tableRef}>
@@ -81,14 +82,14 @@ const TableBody: React.FC = () => {
                       </Link>
                     </td>
                     <td className="py-2 pl-3">
-                      {/* <TreatmentStatus
+                      <TreatmentStatus
                           patientID={patient.id}
                           isOpen={openPatientID === patient.id}
                           onToggle={() => toggleDropdown(patient.id)}
-                        /> */}
-                      <DashboardTreatmentStatus
+                        />
+                      {/* <DashboardTreatmentStatus
                         latestTreatedStatus={latestTreatedStatus}
-                      />
+                      /> */}
                     </td>
                   </motion.tr>
                 );

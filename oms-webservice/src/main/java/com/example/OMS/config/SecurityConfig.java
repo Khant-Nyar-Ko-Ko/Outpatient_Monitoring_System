@@ -38,14 +38,14 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
                 "https://oms-app-237489682555.us-central1.run.app",
-                "https://outpatient-monitoring-system-rose.vercel.app"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
+                "https://outpatient-monitoring-system-1.onrender.com"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type",
                 "Accept", "Authorization", "X-Requested-With",
-                "Access-Control-Request-Method", "Access-Control-Request-Headers","Access-Control-Allow-Headers"));
+                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
         corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept",
                 "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Allow-Credentials"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("Access-Control-Allow-Methods",
-                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
 

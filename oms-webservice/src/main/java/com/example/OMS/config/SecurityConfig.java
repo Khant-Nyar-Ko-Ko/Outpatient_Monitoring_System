@@ -61,8 +61,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/signup", "/api/auth/login")
                         .permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("OPTIONS", "/**").permitAll()
-                        .anyRequest().authenticated())
+                                .requestMatchers("OPTIONS", "/**").permitAll()
+                                .anyRequest().authenticated())
                 .headers(headers -> headers
                         .frameOptions(frameOption->frameOption.sameOrigin())
                 )

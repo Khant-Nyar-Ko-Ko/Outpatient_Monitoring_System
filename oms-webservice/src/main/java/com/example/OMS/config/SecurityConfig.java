@@ -38,7 +38,8 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
                 "https://oms-app-237489682555.us-central1.run.app",
-                "https://outpatient-monitoring-system-1.onrender.com"));
+                "https://outpatient-monitoring-system-1.onrender.com",
+                "https://outpatient-monitoring-system-rose.vercel.app"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type",
                 "Accept", "Authorization", "X-Requested-With",
                 "Access-Control-Request-Method", "Access-Control-Request-Headers"));
